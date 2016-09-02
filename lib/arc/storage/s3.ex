@@ -10,9 +10,15 @@ defmodule Arc.Storage.S3 do
       definition.s3_object_headers(version, {file, scope})
       |> Dict.put(:acl, acl)
 
+    IO.puts "[arc] Starting S3 put object"
+
     case ExAws.S3.put_object(bucket, s3_key, extract_binary(file), s3_options) do
-      {:ok, _res}     -> {:ok, file.file_name}
-      {:error, error} -> {:error, error}
+      {:ok, _res}     ->
+        IO.puts "[arc] Got OK"
+        {:ok, file.file_name}
+      {:error, error} ->
+        IO.puts "[arc] Got an error: #{inspect error}"
+        {:error, error}
     end
   end
 
